@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <ctype.h>
+
+#define MAX 100
+
+char stack[MAX];
+int top = -1;
+
+// Push function
+void push(char x) {
+    stack[++top] = x;
+}
+
+// Pop function
+char pop() {
+    if (top == -1)
+        return -1;
+    else
+        return stack[top--];
+}
+
+// Function to define precedence
+int precedence(char x) {
+    if (x == '(')
+        return 0;
+    if (x == '+' || x == '-')
+        return 1;
+    if (x == '*' || x == '/')
+        return 2;
+    if (x == '^')
+        return 3;
+    return -1;
+}
+
+int main() {
+    char exp[MAX], x;
+    int i = 0;
+
+    printf("Enter infix expression: ");
+    scanf("%s", exp);
+
+    printf("Postfix expression: ");
+
+    while (exp[i] != '\0') {
+        // If operand, print directly
+        if (isalnum(exp[i])) {
+            printf("%c", exp[i]);
+        }
+        // If '(', push it
+        else if (exp[i] == '(') {
+            push(exp[i]);
+        }
+        // If ')', pop until '('
+        else if (exp[i] == ')') {
+            while ((x = pop()) != '(') {
+                printf("%c", x);
+            }
+        }
+        // Operator
+        else {
+            while (top != -1 && precedence(stack[top]) >= precedence(exp[i])) {
+                printf("%c", pop());
+            }
+            push(exp[i]);
+        }
+        i++;
+    }
+
+    // Pop remaining operators
+    while (top != -1) {
+        printf("%c", pop());
+    }
+
+    printf("\n");
+    return 0;
+}
