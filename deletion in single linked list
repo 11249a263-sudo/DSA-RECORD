@@ -1,0 +1,127 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct Node* head = NULL;
+
+// Insert for testing
+void insertAtEnd(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+
+    if (head == NULL) {
+        head = newNode;
+        return;
+    }
+
+    struct Node* temp = head;
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    temp->next = newNode;
+}
+
+// Delete from beginning
+void deleteBeginning() {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+
+    struct Node* temp = head;
+    head = head->next;
+    printf("%d deleted from beginning\n", temp->data);
+    free(temp);
+}
+
+// Delete from end
+void deleteEnd() {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+
+    if (head->next == NULL) {   // only one node
+        printf("%d deleted from end\n", head->data);
+        free(head);
+        head = NULL;
+        return;
+    }
+
+    struct Node* temp = head;
+    struct Node* prev = NULL;
+
+    while (temp->next != NULL) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    printf("%d deleted from end\n", temp->data);
+    prev->next = NULL;
+    free(temp);
+}
+
+// Delete at specific position
+void deleteAtPosition(int pos) {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+
+    if (pos == 1) {
+        deleteBeginning();
+        return;
+    }
+
+    struct Node* temp = head;
+    struct Node* prev = NULL;
+
+    for (int i = 1; i < pos && temp != NULL; i++) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        printf("Position out of range\n");
+        return;
+    }
+
+    prev->next = temp->next;
+    printf("%d deleted from position %d\n", temp->data, pos);
+    free(temp);
+}
+
+// Display the list
+void display() {
+    struct Node* temp = head;
+    printf("Linked List: ");
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    int choice, value, pos;
+
+    // Pre-insert some values for testing
+    insertAtEnd(10);
+    insertAtEnd(20);
+    insertAtEnd(30);
+    insertAtEnd(40);
+
+    while (1) {
+        printf("\n--- Singly Linked List Menu ---\n");
+        printf("1. Delete from Beginning\n2. Delete from End\n3. Delete at Position\n4. Display\n5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                deleteBeginning();
